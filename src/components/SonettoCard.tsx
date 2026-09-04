@@ -7,8 +7,8 @@ type SonettoConDati = {
   titolo: string;
   testo: string;
   createdAt: Date;
-  autore: { name: string; slug: string; emoji: string };
-  bersaglio: { name: string; slug: string; emoji: string } | null;
+  autore: string;
+  bersaglio: string | null;
   reazioni: { tipo: string }[];
 };
 
@@ -36,15 +36,21 @@ export function SonettoCard({ sonetto }: { sonetto: SonettoConDati }) {
 
       <p className="mb-4 text-sm text-zinc-500">
         di{" "}
-        <Link href={`/giocatori/${sonetto.autore.slug}`} className="font-medium text-emerald-800 hover:underline dark:text-emerald-300">
-          {sonetto.autore.emoji} {sonetto.autore.name}
+        <Link
+          href={`/giocatori/${encodeURIComponent(sonetto.autore)}`}
+          className="font-medium text-emerald-800 hover:underline dark:text-emerald-300"
+        >
+          {sonetto.autore}
         </Link>
         {sonetto.bersaglio && (
           <>
             {" "}
             contro{" "}
-            <Link href={`/giocatori/${sonetto.bersaglio.slug}`} className="font-medium text-red-700 hover:underline dark:text-red-400">
-              {sonetto.bersaglio.emoji} {sonetto.bersaglio.name}
+            <Link
+              href={`/giocatori/${encodeURIComponent(sonetto.bersaglio)}`}
+              className="font-medium text-red-700 hover:underline dark:text-red-400"
+            >
+              {sonetto.bersaglio}
             </Link>
           </>
         )}

@@ -34,21 +34,21 @@ export async function logout() {
 }
 
 export async function createSonetto(formData: FormData) {
-  const autoreId = String(formData.get("autoreId") ?? "");
-  const bersaglioId = String(formData.get("bersaglioId") ?? "");
+  const autore = String(formData.get("autore") ?? "").trim();
+  const bersaglio = String(formData.get("bersaglio") ?? "").trim();
   const titolo = String(formData.get("titolo") ?? "").trim();
   const testo = String(formData.get("testo") ?? "").trim();
 
-  if (!autoreId || !titolo || !testo) {
-    throw new Error("Compila autore, titolo e testo del sonetto.");
+  if (!autore || !titolo || !testo) {
+    throw new Error("Compila il tuo nome, il titolo e il testo del sonetto.");
   }
 
   await prisma.sonetto.create({
     data: {
       titolo,
       testo,
-      autoreId,
-      bersaglioId: bersaglioId || null,
+      autore,
+      bersaglio: bersaglio || null,
     },
   });
 

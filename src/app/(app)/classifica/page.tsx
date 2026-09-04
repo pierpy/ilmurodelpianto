@@ -10,7 +10,7 @@ function Podio({
 }: {
   titolo: string;
   emoji: string;
-  righe: { slug: string; label: string; valore: number; unita: string }[];
+  righe: { nome: string; label: string; valore: number; unita: string }[];
 }) {
   return (
     <section className="rounded-2xl border border-emerald-900/10 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-zinc-900">
@@ -23,10 +23,10 @@ function Podio({
       ) : (
         <ol className="flex flex-col gap-2">
           {righe.map((r, i) => (
-            <li key={r.slug} className="flex items-center justify-between gap-3 text-sm">
+            <li key={r.nome} className="flex items-center justify-between gap-3 text-sm">
               <span className="flex items-center gap-2">
                 <span className="w-5 text-center text-zinc-400">{i + 1}.</span>
-                <Link href={`/giocatori/${r.slug}`} className="font-medium hover:underline">
+                <Link href={`/giocatori/${encodeURIComponent(r.nome)}`} className="font-medium hover:underline">
                   {r.label}
                 </Link>
               </span>
@@ -42,60 +42,46 @@ function Podio({
 }
 
 export default async function Classifica() {
-  const [sonettiPiuReazionati, autoriGroup, vittimeGroup, giocatori] = await Promise.all([
-    prisma.sonetto.findMany({
-      include: {
-        autore: { select: { name: true, slug: true, emoji: true } },
-        reazioni: true,
-      },
-    }),
-    prisma.sonetto.groupBy({ by: ["autoreId"], _count: { autoreId: true } }),
+  const [sonetti, autoriGroup, vittimeGroup] = await Promise.all([
+    prisma.sonetto.findMany({ include: { reazioni: true } }),
+    prisma.sonetto.groupBy({ by: ["autore"], _count: { autore: true } }),
     prisma.sonetto.groupBy({
-      by: ["bersaglioId"],
-      _count: { bersaglioId: true },
-      where: { bersaglioId: { not: null } },
+      by: ["bersaglio"],
+      _count: { bersaglio: true },
+      where: { bersaglio: { not: null } },
     }),
-    prisma.player.findMany(),
   ]);
 
-  const giocatoriById = new Map(giocatori.map((g) => [g.id, g]));
-
-  const topSonetti = sonettiPiuReazionati
+  const topSonetti = sonetti
     .map((s) => ({ ...s, totaleReazioni: s.reazioni.length }))
     .sort((a, b) => b.totaleReazioni - a.totaleReazioni)
     .slice(0, 5)
     .filter((s) => s.totaleReazioni > 0)
     .map((s) => ({
-      slug: s.autore.slug,
-      label: `${s.titolo} (${s.autore.name})`,
+      nome: s.autore,
+      label: `${s.titolo} (${s.autore})`,
       valore: s.totaleReazioni,
       unita: "reazioni",
     }));
 
   const topAutori = autoriGroup
-    .map((g) => ({ giocatore: giocatoriById.get(g.autoreId), count: g._count.autoreId }))
-    .filter((g) => g.giocatore)
-    .sort((a, b) => b.count - a.count)
+    .sort((a, b) => b._count.autore - a._count.autore)
     .slice(0, 5)
     .map((g) => ({
-      slug: g.giocatore!.slug,
-      label: `${g.giocatore!.emoji} ${g.giocatore!.name}`,
-      valore: g.count,
+      nome: g.autore,
+      label: g.autore,
+      valore: g._count.autore,
       unita: "sonetti scritti",
     }));
 
   const topVittime = vittimeGroup
-    .map((g) => ({
-      giocatore: g.bersaglioId ? giocatoriById.get(g.bersaglioId) : undefined,
-      count: g._count.bersaglioId,
-    }))
-    .filter((g) => g.giocatore)
-    .sort((a, b) => b.count - a.count)
+    .filter((g): g is typeof g & { bersaglio: string } => g.bersaglio !== null)
+    .sort((a, b) => b._count.bersaglio - a._count.bersaglio)
     .slice(0, 5)
     .map((g) => ({
-      slug: g.giocatore!.slug,
-      label: `${g.giocatore!.emoji} ${g.giocatore!.name}`,
-      valore: g.count,
+      nome: g.bersaglio,
+      label: g.bersaglio,
+      valore: g._count.bersaglio,
       unita: "sonetti ricevuti",
     }));
 

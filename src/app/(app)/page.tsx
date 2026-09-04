@@ -8,8 +8,6 @@ export default async function Bacheca() {
   const sonetti = await prisma.sonetto.findMany({
     orderBy: { createdAt: "desc" },
     include: {
-      autore: { select: { name: true, slug: true, emoji: true } },
-      bersaglio: { select: { name: true, slug: true, emoji: true } },
       reazioni: { select: { tipo: true } },
     },
   });

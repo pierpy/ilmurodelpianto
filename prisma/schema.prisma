@@ -7,31 +7,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Player {
+model Sonetto {
   id        String   @id @default(cuid())
-  name      String   @unique
-  slug      String   @unique
-  emoji     String   @default("⚽")
-  team      String?
+  titolo    String
+  testo     String
   createdAt DateTime @default(now())
 
-  sonettiScritti  Sonetto[] @relation("Autore")
-  sonettiRicevuti Sonetto[] @relation("Bersaglio")
-}
+  autore    String
+  bersaglio String?
 
-model Sonetto {
-  id          String   @id @default(cuid())
-  titolo      String
-  testo       String
-  createdAt   DateTime @default(now())
-
-  autoreId    String
-  autore      Player   @relation("Autore", fields: [autoreId], references: [id])
-
-  bersaglioId String?
-  bersaglio   Player?  @relation("Bersaglio", fields: [bersaglioId], references: [id])
-
-  reazioni    Reazione[]
+  reazioni  Reazione[]
 }
 
 model Reazione {

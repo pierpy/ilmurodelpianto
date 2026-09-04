@@ -3,18 +3,23 @@ import { createSonetto } from "@/app/actions";
 
 export const dynamic = "force-dynamic";
 
-export default async function NuovoSonetto() {
-  const giocatori = await prisma.player.findMany({ orderBy: { name: "asc" } });
+async function getNomiConosciuti() {
+  const [autori, bersagli] = await Promise.all([
+    prisma.sonetto.findMany({ distinct: ["autore"], select: { autore: true } }),
+    prisma.sonetto.findMany({
+      where: { bersaglio: { not: null } },
+      distinct: ["bersaglio"],
+      select: { bersaglio: true },
+    }),
+  ]);
+  const nomi = new Set<string>();
+  for (const a of autori) nomi.add(a.autore);
+  for (const b of bersagli) if (b.bersaglio) nomi.add(b.bersaglio);
+  return Array.from(nomi).sort((a, b) => a.localeCompare(b));
+}
 
-  if (giocatori.length === 0) {
-    return (
-      <p className="text-zinc-500">
-        Non ci sono ancora giocatori in lega. Aggiungili con{" "}
-        <code className="rounded bg-black/5 px-1 py-0.5 dark:bg-white/10">npm run db:seed</code> o
-        direttamente nel database.
-      </p>
-    );
-  }
+export default async function NuovoSonetto() {
+  const nomiConosciuti = await getNomiConosciuti();
 
   return (
     <form action={createSonetto} className="flex flex-col gap-5">
@@ -25,35 +30,33 @@ export default async function NuovoSonetto() {
         </p>
       </div>
 
+      <datalist id="nomi-conosciuti">
+        {nomiConosciuti.map((nome) => (
+          <option key={nome} value={nome} />
+        ))}
+      </datalist>
+
       <div>
-        <label className="mb-1 block text-sm font-medium">Chi scrive?</label>
-        <select
-          name="autoreId"
+        <label className="mb-1 block text-sm font-medium">Il tuo nome</label>
+        <input
+          type="text"
+          name="autore"
           required
+          list="nomi-conosciuti"
+          placeholder="Come ti firmi?"
           className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 dark:border-zinc-700 dark:bg-zinc-800"
-        >
-          <option value="">— seleziona il tuo nome —</option>
-          {giocatori.map((g) => (
-            <option key={g.id} value={g.id}>
-              {g.emoji} {g.name}
-            </option>
-          ))}
-        </select>
+        />
       </div>
 
       <div>
         <label className="mb-1 block text-sm font-medium">Contro chi? (opzionale)</label>
-        <select
-          name="bersaglioId"
+        <input
+          type="text"
+          name="bersaglio"
+          list="nomi-conosciuti"
+          placeholder="Nessuno in particolare / lega intera"
           className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 dark:border-zinc-700 dark:bg-zinc-800"
-        >
-          <option value="">Nessuno in particolare / lega intera</option>
-          {giocatori.map((g) => (
-            <option key={g.id} value={g.id}>
-              {g.emoji} {g.name}
-            </option>
-          ))}
-        </select>
+        />
       </div>
 
       <div>
