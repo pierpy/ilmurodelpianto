@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Il Muro del Pianto ⚽📜
 
-## Getting Started
+Il sito della lega dove ognuno scrive sonetti, rime o versi liberi per prendere in giro gli altri fantallenatori. Bacheca dei sonetti, classifica dei più "apprezzati", pagina profilo per ogni giocatore (sonetti scritti e ricevuti), tutto protetto da una password condivisa della lega.
 
-First, run the development server:
+Stack: Next.js (App Router) + TypeScript + Tailwind CSS + Prisma + Postgres.
+
+## Sviluppo locale
+
+1. Installa le dipendenze:
+
+   ```bash
+   npm install
+   ```
+
+2. Copia `.env.example` in `.env` e `.env.local` e compila i valori:
+
+   ```bash
+   cp .env.example .env
+   cp .env.example .env.local
+   ```
+
+   - `SITE_PASSWORD`: la password che il gruppo userà per entrare nel sito.
+   - `DATABASE_URL`: stringa di connessione a un database Postgres (vedi sotto per una versione locale o cloud gratuita).
+
+   `.env` serve alla CLI di Prisma (`db:push`, `db:seed`), `.env.local` serve a Next.js in sviluppo.
+
+3. Modifica `prisma/seed.ts` con i nomi reali dei giocatori della tua lega.
+
+4. Crea le tabelle nel database e popola i giocatori:
+
+   ```bash
+   npm run db:push
+   npm run db:seed
+   ```
+
+5. Avvia il server di sviluppo:
+
+   ```bash
+   npm run dev
+   ```
+
+   Apri [http://localhost:3000](http://localhost:3000): ti verrà chiesta la password impostata in `SITE_PASSWORD`.
+
+### Database locale rapido
+
+Se hai Postgres installato in locale:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+createdb murodelpianto
+# DATABASE_URL=postgresql://<user>@localhost:5432/murodelpianto
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+In alternativa puoi usare un database Postgres gratuito in cloud (consigliato, così è già pronto per Vercel): [Neon](https://neon.tech), [Supabase](https://supabase.com) o il componente Postgres integrato di Vercel.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Deploy su Vercel
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Crea un database Postgres:
+   - Nella dashboard del progetto Vercel vai su **Storage → Create Database → Postgres** (basato su Neon), oppure crea un database gratuito su [neon.tech](https://neon.tech) o [supabase.com](https://supabase.com).
+   - Copia la connection string.
 
-## Learn More
+2. Importa il repository su Vercel ([vercel.com/new](https://vercel.com/new)).
 
-To learn more about Next.js, take a look at the following resources:
+3. Nelle **Environment Variables** del progetto Vercel aggiungi:
+   - `DATABASE_URL` = la connection string del database (assicurati che includa `?sslmode=require` se richiesto dal provider).
+   - `SITE_PASSWORD` = la password che vuoi usare per il gruppo.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. Al primo deploy le tabelle non esistono ancora. Da locale, puntando `DATABASE_URL` (nel tuo `.env`) allo stesso database di produzione, esegui una volta:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   ```bash
+   npm run db:push
+   npm run db:seed
+   ```
 
-## Deploy on Vercel
+   (`db:seed` crea i giocatori definiti in `prisma/seed.ts` — modificalo prima con i nomi veri della lega.)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+5. Fai il deploy. Ad ogni build Vercel esegue automaticamente `prisma generate` (script `postinstall`).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Per aggiungere o modificare i giocatori in seguito, puoi rieseguire `db:seed` (aggiorna solo chi manca, non duplica) oppure usare `npm run db:studio` per un'interfaccia grafica sul database.
+
+## Struttura del sito
+
+- **Bacheca** (`/`) — feed di tutti i sonetti, ordinati dal più recente, con reazioni 🔥 💀 👏.
+- **Scrivi un sonetto** (`/nuovo`) — form per pubblicare un nuovo sonetto: autore, bersaglio (opzionale), titolo e testo.
+- **Classifica** (`/classifica`) — sonetti più apprezzati, poeti più prolifici, vittime designate.
+- **Profilo giocatore** (`/giocatori/[slug]`) — sonetti scritti e ricevuti da un singolo giocatore.
+- **Login** (`/login`) — schermata con la password condivisa della lega; una volta autenticati, l'accesso resta valido per 90 giorni (cookie).
+
+Non c'è un login individuale per persona: chiunque conosca la password del gruppo può scrivere sonetti "a nome di" chiunque sia in lega (selezionandolo da un menu a tendina). È una scelta voluta per restare semplice, dato il contesto informale.

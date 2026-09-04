@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Player {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  emoji     String   @default("⚽")
+  team      String?
+  createdAt DateTime @default(now())
+
+  sonettiScritti  Sonetto[] @relation("Autore")
+  sonettiRicevuti Sonetto[] @relation("Bersaglio")
+}
+
+model Sonetto {
+  id          String   @id @default(cuid())
+  titolo      String
+  testo       String
+  createdAt   DateTime @default(now())
+
+  autoreId    String
+  autore      Player   @relation("Autore", fields: [autoreId], references: [id])
+
+  bersaglioId String?
+  bersaglio   Player?  @relation("Bersaglio", fields: [bersaglioId], references: [id])
+
+  reazioni    Reazione[]
+}
+
+model Reazione {
+  id        String   @id @default(cuid())
+  tipo      String
+  createdAt DateTime @default(now())
+
+  sonettoId String
+  sonetto   Sonetto  @relation(fields: [sonettoId], references: [id], onDelete: Cascade)
+
+  @@index([sonettoId])
+}
