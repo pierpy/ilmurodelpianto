@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
+import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { SonettoCard } from "@/components/SonettoCard";
+import { NOME_COOKIE_NAME } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -12,7 +14,7 @@ export default async function ProfiloGiocatore({
   const { nome: nomeParam } = await params;
   const nome = decodeURIComponent(nomeParam);
 
-  const [ricevuti, scritti] = await Promise.all([
+  const [ricevuti, scritti, cookieStore] = await Promise.all([
     prisma.sonetto.findMany({
       where: { bersaglio: { equals: nome, mode: "insensitive" } },
       orderBy: { createdAt: "desc" },
@@ -29,7 +31,9 @@ export default async function ProfiloGiocatore({
         commenti: { orderBy: { createdAt: "asc" } },
       },
     }),
+    cookies(),
   ]);
+  const nomeSalvato = cookieStore.get(NOME_COOKIE_NAME)?.value;
 
   if (ricevuti.length === 0 && scritti.length === 0) notFound();
 
@@ -47,7 +51,7 @@ export default async function ProfiloGiocatore({
           {ricevuti.length === 0 ? (
             <p className="text-sm text-zinc-500">Per ora nessuno lo ha preso di mira. Bravo?</p>
           ) : (
-            ricevuti.map((s) => <SonettoCard key={s.id} sonetto={s} />)
+            ricevuti.map((s) => <SonettoCard key={s.id} sonetto={s} nomeSalvato={nomeSalvato} />)
           )}
         </div>
       </section>
@@ -60,7 +64,7 @@ export default async function ProfiloGiocatore({
           {scritti.length === 0 ? (
             <p className="text-sm text-zinc-500">Non ha ancora impugnato la penna.</p>
           ) : (
-            scritti.map((s) => <SonettoCard key={s.id} sonetto={s} />)
+            scritti.map((s) => <SonettoCard key={s.id} sonetto={s} nomeSalvato={nomeSalvato} />)
           )}
         </div>
       </section>

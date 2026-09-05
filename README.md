@@ -77,4 +77,10 @@ Puoi ispezionare o modificare a mano i dati con `npm run db:studio` (apre un'int
 - **Pagina persona** (`/giocatori/[nome]`) — sonetti scritti e ricevuti da chiunque compaia come autore o bersaglio di almeno un sonetto.
 - **Login** (`/login`) — schermata con la password condivisa della lega; una volta autenticati, l'accesso resta valido per 90 giorni (cookie).
 
-Non c'è un account individuale per persona: chiunque conosca la password del gruppo entra, vede tutti i sonetti e può scriverne di nuovi firmandoli con il proprio nome. È una scelta voluta per restare semplice, dato il contesto informale.
+Non c'è un account individuale per persona: chiunque conosca la password del gruppo entra, vede tutti i sonetti e può scriverne di nuovi firmandoli con il proprio nome. È una scelta voluta per restare semplice, dato il contesto informale. Per comodità, il nome inserito al login (o la prima volta che si scrive un sonetto/commento) viene ricordato in un cookie sul dispositivo e riproposto automaticamente le volte successive — resta comunque un campo libero, modificabile in qualsiasi momento.
+
+## Personalizzare lo sfondo con le foto
+
+Metti le immagini che vuoi usare come sfondo (foto della lega, meme, quel che è) dentro `public/sfondo/` (formati supportati: jpg, jpeg, png, webp, gif). Se la cartella contiene almeno una foto, il sito le mostra automaticamente come collage sullo sfondo di ogni pagina, leggermente ruotate e con un velo di colore sopra per mantenere il testo leggibile. Se la cartella è vuota, resta lo sfondo a tinta unita.
+
+Dopo aver aggiunto le foto, ricordati di fare commit e ridistribuire il sito (`git add public/sfondo && git commit -m "aggiunge foto sfondo" && npx vercel --prod`).

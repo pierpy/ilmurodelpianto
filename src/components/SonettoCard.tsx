@@ -33,7 +33,13 @@ function linkWhatsapp(sonetto: SonettoConDati) {
   return `https://wa.me/?text=${encodeURIComponent(righe.join("\n"))}`;
 }
 
-export function SonettoCard({ sonetto }: { sonetto: SonettoConDati }) {
+export function SonettoCard({
+  sonetto,
+  nomeSalvato,
+}: {
+  sonetto: SonettoConDati;
+  nomeSalvato?: string;
+}) {
   return (
     <article className="rounded-2xl border border-emerald-900/10 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-zinc-900">
       <header className="mb-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
@@ -105,6 +111,7 @@ export function SonettoCard({ sonetto }: { sonetto: SonettoConDati }) {
             type="text"
             name="autore"
             required
+            defaultValue={nomeSalvato}
             placeholder="Il tuo nome"
             className="w-32 flex-none rounded-lg border border-zinc-300 bg-white px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-800"
           />

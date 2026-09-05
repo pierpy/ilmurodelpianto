@@ -4,10 +4,24 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { AUTH_COOKIE_NAME, createAuthToken } from "@/lib/auth";
+import { AUTH_COOKIE_NAME, NOME_COOKIE_NAME, createAuthToken } from "@/lib/auth";
+
+const NOME_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
+
+async function ricordaNome(nome: string) {
+  if (!nome) return;
+  const cookieStore = await cookies();
+  cookieStore.set(NOME_COOKIE_NAME, nome, {
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: NOME_COOKIE_MAX_AGE,
+  });
+}
 
 export async function login(formData: FormData) {
   const password = String(formData.get("password") ?? "");
+  const nome = String(formData.get("nome") ?? "").trim();
   const next = String(formData.get("next") ?? "/");
 
   if (password !== process.env.SITE_PASSWORD) {
@@ -23,6 +37,8 @@ export async function login(formData: FormData) {
     path: "/",
     maxAge: 60 * 60 * 24 * 90,
   });
+
+  await ricordaNome(nome);
 
   redirect(next || "/");
 }
@@ -51,6 +67,8 @@ export async function createSonetto(formData: FormData) {
       bersaglio: bersaglio || null,
     },
   });
+
+  await ricordaNome(autore);
 
   revalidatePath("/");
   revalidatePath("/classifica");
@@ -83,6 +101,8 @@ export async function createCommento(formData: FormData) {
   await prisma.commento.create({
     data: { sonettoId, autore, testo },
   });
+
+  await ricordaNome(autore);
 
   revalidatePath("/");
   revalidatePath("/classifica");

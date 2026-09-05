@@ -1,17 +1,23 @@
 import Link from "next/link";
+import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { SonettoCard } from "@/components/SonettoCard";
+import { NOME_COOKIE_NAME } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
 export default async function Bacheca() {
-  const sonetti = await prisma.sonetto.findMany({
-    orderBy: { createdAt: "desc" },
-    include: {
-      reazioni: { select: { tipo: true } },
-      commenti: { orderBy: { createdAt: "asc" } },
-    },
-  });
+  const [sonetti, cookieStore] = await Promise.all([
+    prisma.sonetto.findMany({
+      orderBy: { createdAt: "desc" },
+      include: {
+        reazioni: { select: { tipo: true } },
+        commenti: { orderBy: { createdAt: "asc" } },
+      },
+    }),
+    cookies(),
+  ]);
+  const nomeSalvato = cookieStore.get(NOME_COOKIE_NAME)?.value;
 
   if (sonetti.length === 0) {
     return (
@@ -33,7 +39,7 @@ export default async function Bacheca() {
   return (
     <div className="flex flex-col gap-6">
       {sonetti.map((sonetto) => (
-        <SonettoCard key={sonetto.id} sonetto={sonetto} />
+        <SonettoCard key={sonetto.id} sonetto={sonetto} nomeSalvato={nomeSalvato} />
       ))}
     </div>
   );

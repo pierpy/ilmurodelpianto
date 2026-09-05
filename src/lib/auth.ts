@@ -1,4 +1,5 @@
 export const AUTH_COOKIE_NAME = "murodelpianto_auth";
+export const NOME_COOKIE_NAME = "murodelpianto_nome";
 const AUTH_PAYLOAD = "autenticato";
 
 function getSecret() {

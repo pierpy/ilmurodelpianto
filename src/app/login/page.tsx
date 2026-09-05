@@ -42,6 +42,16 @@ export default async function LoginPage({
           <p className="mt-2 text-sm text-red-600">Password sbagliata, riprova.</p>
         )}
 
+        <label className="mt-4 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          Come ti chiami? <span className="font-normal text-zinc-400">(opzionale)</span>
+        </label>
+        <input
+          type="text"
+          name="nome"
+          placeholder="Così te lo ricordiamo la prossima volta"
+          className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 dark:border-zinc-700 dark:bg-zinc-800"
+        />
+
         <button
           type="submit"
           className="mt-4 w-full rounded-lg bg-emerald-700 px-4 py-2 font-semibold text-white transition-colors hover:bg-emerald-800"

@@ -1,5 +1,7 @@
+import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { createSonetto } from "@/app/actions";
+import { NOME_COOKIE_NAME } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +21,8 @@ async function getNomiConosciuti() {
 }
 
 export default async function NuovoSonetto() {
-  const nomiConosciuti = await getNomiConosciuti();
+  const [nomiConosciuti, cookieStore] = await Promise.all([getNomiConosciuti(), cookies()]);
+  const nomeSalvato = cookieStore.get(NOME_COOKIE_NAME)?.value ?? "";
 
   return (
     <form action={createSonetto} className="flex flex-col gap-5">
@@ -43,6 +46,7 @@ export default async function NuovoSonetto() {
           name="autore"
           required
           list="nomi-conosciuti"
+          defaultValue={nomeSalvato}
           placeholder="Come ti firmi?"
           className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 dark:border-zinc-700 dark:bg-zinc-800"
         />

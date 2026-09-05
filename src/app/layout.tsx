@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Caveat } from "next/font/google";
+import { PhotoBackground } from "@/components/PhotoBackground";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} ${caveat.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-emerald-50 text-emerald-950 dark:bg-zinc-950 dark:text-zinc-100">
+        <PhotoBackground />
         {children}
       </body>
     </html>
