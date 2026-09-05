@@ -5,6 +5,9 @@ import { NOME_COOKIE_NAME } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
+const CAMPO =
+  "w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2.5 outline-none transition-shadow focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/15 dark:border-zinc-700 dark:bg-zinc-800";
+
 async function getNomiConosciuti() {
   const [autori, bersagli] = await Promise.all([
     prisma.sonetto.findMany({ distinct: ["autore"], select: { autore: true } }),
@@ -25,9 +28,14 @@ export default async function NuovoSonetto() {
   const nomeSalvato = cookieStore.get(NOME_COOKIE_NAME)?.value ?? "";
 
   return (
-    <form action={createSonetto} className="flex flex-col gap-5">
+    <form
+      action={createSonetto}
+      className="entrata flex flex-col gap-5 rounded-3xl border border-emerald-900/10 bg-white p-6 shadow-sm sm:p-8 dark:border-white/10 dark:bg-zinc-900"
+    >
       <div>
-        <h1 className="font-hand text-3xl font-bold">Scrivi un sonetto</h1>
+        <h1 className="font-hand text-4xl font-bold text-emerald-950 dark:text-emerald-100">
+          Scrivi un sonetto
+        </h1>
         <p className="text-sm text-zinc-500">
           Rime, terzine o versi liberi: l&apos;importante è far ridere (e un po&apos; soffrire).
         </p>
@@ -48,7 +56,7 @@ export default async function NuovoSonetto() {
           list="nomi-conosciuti"
           defaultValue={nomeSalvato}
           placeholder="Come ti firmi?"
-          className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 dark:border-zinc-700 dark:bg-zinc-800"
+          className={CAMPO}
         />
       </div>
 
@@ -59,7 +67,7 @@ export default async function NuovoSonetto() {
           name="bersaglio"
           list="nomi-conosciuti"
           placeholder="Nessuno in particolare / lega intera"
-          className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 dark:border-zinc-700 dark:bg-zinc-800"
+          className={CAMPO}
         />
       </div>
 
@@ -70,7 +78,7 @@ export default async function NuovoSonetto() {
           name="titolo"
           required
           placeholder="Es: Ballata del portiere bucato"
-          className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 dark:border-zinc-700 dark:bg-zinc-800"
+          className={CAMPO}
         />
       </div>
 
@@ -81,13 +89,13 @@ export default async function NuovoSonetto() {
           required
           rows={10}
           placeholder={"Nel campionato de la lega nostra,\nun mister c'è che formazioni sbaglia..."}
-          className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 font-hand text-lg leading-relaxed dark:border-zinc-700 dark:bg-zinc-800"
+          className={`${CAMPO} font-hand text-lg leading-relaxed`}
         />
       </div>
 
       <button
         type="submit"
-        className="self-start rounded-lg bg-emerald-700 px-5 py-2.5 font-semibold text-white hover:bg-emerald-800"
+        className="self-start rounded-full bg-gradient-to-r from-emerald-700 to-teal-600 px-6 py-2.5 font-semibold text-white shadow-md shadow-emerald-900/20 transition-transform hover:scale-105 active:scale-95"
       >
         Pubblica sul muro
       </button>

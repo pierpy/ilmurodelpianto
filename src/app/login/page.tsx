@@ -13,11 +13,11 @@ export default async function LoginPage({
     <div className="flex flex-1 items-center justify-center px-4">
       <form
         action={login}
-        className="w-full max-w-sm rounded-2xl border border-emerald-900/10 bg-white p-8 shadow-xl shadow-emerald-950/5 dark:border-white/10 dark:bg-zinc-900"
+        className="entrata w-full max-w-sm rounded-3xl border border-emerald-900/10 bg-white/90 p-8 shadow-2xl shadow-emerald-950/10 backdrop-blur-sm dark:border-white/10 dark:bg-zinc-900/90"
       >
         <div className="mb-6 text-center">
-          <div className="text-4xl">⚽📜</div>
-          <h1 className="mt-2 font-serif text-2xl font-bold text-emerald-950 dark:text-emerald-100">
+          <div className="text-5xl drop-shadow-sm">⚽📜</div>
+          <h1 className="mt-3 font-hand text-4xl font-bold text-emerald-950 dark:text-emerald-100">
             Il Muro del Pianto
           </h1>
           <p className="mt-1 text-sm text-zinc-500">
@@ -35,7 +35,7 @@ export default async function LoginPage({
           name="password"
           autoFocus
           required
-          className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 dark:border-zinc-700 dark:bg-zinc-800"
+          className="mt-1 w-full rounded-xl border border-zinc-300 px-3 py-2.5 outline-none transition-shadow focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/15 dark:border-zinc-700 dark:bg-zinc-800"
         />
 
         {error && (
@@ -49,12 +49,12 @@ export default async function LoginPage({
           type="text"
           name="nome"
           placeholder="Così te lo ricordiamo la prossima volta"
-          className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 dark:border-zinc-700 dark:bg-zinc-800"
+          className="mt-1 w-full rounded-xl border border-zinc-300 px-3 py-2.5 outline-none transition-shadow focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/15 dark:border-zinc-700 dark:bg-zinc-800"
         />
 
         <button
           type="submit"
-          className="mt-4 w-full rounded-lg bg-emerald-700 px-4 py-2 font-semibold text-white transition-colors hover:bg-emerald-800"
+          className="mt-6 w-full rounded-xl bg-gradient-to-r from-emerald-700 to-teal-600 px-4 py-2.5 font-semibold text-white shadow-lg shadow-emerald-900/20 transition-transform hover:scale-[1.02] hover:shadow-xl active:scale-[0.98]"
         >
           Entra
         </button>

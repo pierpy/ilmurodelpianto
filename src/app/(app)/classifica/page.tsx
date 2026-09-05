@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
+const MEDAGLIE = ["🥇", "🥈", "🥉"];
+
 function Podio({
   titolo,
   emoji,
@@ -13,7 +15,7 @@ function Podio({
   righe: { nome: string; label: string; valore: number; unita: string }[];
 }) {
   return (
-    <section className="rounded-2xl border border-emerald-900/10 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-zinc-900">
+    <section className="entrata rounded-3xl border border-emerald-900/10 bg-white p-6 shadow-sm transition-shadow hover:shadow-md dark:border-white/10 dark:bg-zinc-900">
       <h2 className="mb-4 flex items-center gap-2 font-hand text-2xl font-bold">
         <span>{emoji}</span>
         {titolo}
@@ -21,11 +23,16 @@ function Podio({
       {righe.length === 0 ? (
         <p className="text-sm text-zinc-500">Ancora nessun dato.</p>
       ) : (
-        <ol className="flex flex-col gap-2">
+        <ol className="flex flex-col gap-1">
           {righe.map((r, i) => (
-            <li key={r.nome} className="flex items-center justify-between gap-3 text-sm">
+            <li
+              key={r.nome}
+              className={`flex items-center justify-between gap-3 rounded-xl px-3 py-2 text-sm ${
+                i === 0 ? "bg-amber-400/10" : i === 1 ? "bg-zinc-400/10" : i === 2 ? "bg-orange-400/10" : ""
+              }`}
+            >
               <span className="flex items-center gap-2">
-                <span className="w-5 text-center text-zinc-400">{i + 1}.</span>
+                <span className="w-6 text-center">{MEDAGLIE[i] ?? `${i + 1}.`}</span>
                 <Link href={`/giocatori/${encodeURIComponent(r.nome)}`} className="font-medium hover:underline">
                   {r.label}
                 </Link>
@@ -87,7 +94,9 @@ export default async function Classifica() {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="font-hand text-3xl font-bold">Classifica del muro</h1>
+      <h1 className="font-hand text-4xl font-bold text-emerald-950 dark:text-emerald-100">
+        Classifica del muro
+      </h1>
       <Podio titolo="Sonetti più apprezzati" emoji="🏆" righe={topSonetti} />
       <Podio titolo="Poeti più prolifici" emoji="✍️" righe={topAutori} />
       <Podio titolo="Vittime designate" emoji="🎯" righe={topVittime} />

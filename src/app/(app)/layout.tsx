@@ -1,29 +1,24 @@
 import Link from "next/link";
 import { logout } from "@/app/actions";
+import { NavLinks } from "@/components/NavLinks";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-full flex-1 flex-col">
-      <header className="border-b border-emerald-900/10 bg-white/80 backdrop-blur dark:border-white/10 dark:bg-zinc-900/80">
+      <header className="sticky top-0 z-30 border-b border-emerald-900/10 bg-white/70 shadow-sm backdrop-blur-md dark:border-white/10 dark:bg-zinc-900/70">
         <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-3 px-4 py-3">
-          <Link href="/" className="flex items-center gap-2 font-serif text-xl font-bold">
-            <span>⚽📜</span>
-            <span>Il Muro del Pianto</span>
+          <Link href="/" className="flex items-center gap-2 text-xl font-bold tracking-tight">
+            <span className="text-2xl">⚽📜</span>
+            <span className="bg-gradient-to-r from-emerald-700 to-teal-600 bg-clip-text text-transparent dark:from-emerald-400 dark:to-teal-300">
+              Il Muro del Pianto
+            </span>
           </Link>
           <nav className="flex flex-wrap items-center gap-1 text-sm font-medium">
-            <Link href="/" className="rounded-lg px-3 py-1.5 hover:bg-emerald-900/5 dark:hover:bg-white/10">
-              Bacheca
-            </Link>
-            <Link href="/nuovo" className="rounded-lg px-3 py-1.5 hover:bg-emerald-900/5 dark:hover:bg-white/10">
-              Scrivi un sonetto
-            </Link>
-            <Link href="/classifica" className="rounded-lg px-3 py-1.5 hover:bg-emerald-900/5 dark:hover:bg-white/10">
-              Classifica
-            </Link>
+            <NavLinks />
             <form action={logout}>
               <button
                 type="submit"
-                className="rounded-lg px-3 py-1.5 text-zinc-500 hover:bg-emerald-900/5 hover:text-red-600 dark:hover:bg-white/10"
+                className="rounded-full px-3.5 py-1.5 text-zinc-500 transition-colors hover:bg-red-500/10 hover:text-red-600"
               >
                 Esci
               </button>

@@ -39,8 +39,9 @@ export default async function ProfiloGiocatore({
 
   return (
     <div className="flex flex-col gap-8">
-      <header className="rounded-2xl border border-emerald-900/10 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-zinc-900">
-        <h1 className="font-hand text-3xl font-bold">{nome}</h1>
+      <header className="entrata flex items-center gap-4 rounded-3xl border border-emerald-900/10 bg-gradient-to-br from-emerald-700 to-teal-600 p-6 text-white shadow-lg shadow-emerald-900/20">
+        <span className="text-4xl">⚽</span>
+        <h1 className="font-hand text-4xl font-bold drop-shadow-sm">{nome}</h1>
       </header>
 
       <section>
