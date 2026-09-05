@@ -70,3 +70,20 @@ export async function reagisci(sonettoId: string, tipo: TipoReazione) {
   revalidatePath("/");
   revalidatePath("/classifica");
 }
+
+export async function createCommento(formData: FormData) {
+  const sonettoId = String(formData.get("sonettoId") ?? "");
+  const autore = String(formData.get("autore") ?? "").trim();
+  const testo = String(formData.get("testo") ?? "").trim();
+
+  if (!sonettoId || !autore || !testo) {
+    throw new Error("Compila il tuo nome e il commento.");
+  }
+
+  await prisma.commento.create({
+    data: { sonettoId, autore, testo },
+  });
+
+  revalidatePath("/");
+  revalidatePath("/classifica");
+}

@@ -17,11 +17,24 @@ model Sonetto {
   bersaglio String?
 
   reazioni  Reazione[]
+  commenti  Commento[]
 }
 
 model Reazione {
   id        String   @id @default(cuid())
   tipo      String
+  createdAt DateTime @default(now())
+
+  sonettoId String
+  sonetto   Sonetto  @relation(fields: [sonettoId], references: [id], onDelete: Cascade)
+
+  @@index([sonettoId])
+}
+
+model Commento {
+  id        String   @id @default(cuid())
+  autore    String
+  testo     String
   createdAt DateTime @default(now())
 
   sonettoId String

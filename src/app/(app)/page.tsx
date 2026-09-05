@@ -9,6 +9,7 @@ export default async function Bacheca() {
     orderBy: { createdAt: "desc" },
     include: {
       reazioni: { select: { tipo: true } },
+      commenti: { orderBy: { createdAt: "asc" } },
     },
   });
 

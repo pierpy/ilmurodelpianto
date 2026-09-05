@@ -71,7 +71,7 @@ Puoi ispezionare o modificare a mano i dati con `npm run db:studio` (apre un'int
 
 ## Struttura del sito
 
-- **Bacheca** (`/`) — feed di tutti i sonetti, ordinati dal più recente, con reazioni 🔥 💀 👏.
+- **Bacheca** (`/`) — feed di tutti i sonetti, ordinati dal più recente, con reazioni 🔥 💀 👏, commenti pubblici e un pulsante per condividere su WhatsApp.
 - **Scrivi un sonetto** (`/nuovo`) — form per pubblicare un nuovo sonetto: il tuo nome, il bersaglio (opzionale), titolo e testo. Non c'è una rosa di giocatori da configurare: il nome lo scrivi tu al momento (con suggerimento automatico dei nomi già usati).
 - **Classifica** (`/classifica`) — sonetti più apprezzati, poeti più prolifici, vittime designate.
 - **Pagina persona** (`/giocatori/[nome]`) — sonetti scritti e ricevuti da chiunque compaia come autore o bersaglio di almeno un sonetto.

@@ -16,12 +16,18 @@ export default async function ProfiloGiocatore({
     prisma.sonetto.findMany({
       where: { bersaglio: { equals: nome, mode: "insensitive" } },
       orderBy: { createdAt: "desc" },
-      include: { reazioni: { select: { tipo: true } } },
+      include: {
+        reazioni: { select: { tipo: true } },
+        commenti: { orderBy: { createdAt: "asc" } },
+      },
     }),
     prisma.sonetto.findMany({
       where: { autore: { equals: nome, mode: "insensitive" } },
       orderBy: { createdAt: "desc" },
-      include: { reazioni: { select: { tipo: true } } },
+      include: {
+        reazioni: { select: { tipo: true } },
+        commenti: { orderBy: { createdAt: "asc" } },
+      },
     }),
   ]);
 

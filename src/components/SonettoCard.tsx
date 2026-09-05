@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ReactionButtons } from "@/components/ReactionButtons";
-import type { TipoReazione } from "@/app/actions";
+import { createCommento, type TipoReazione } from "@/app/actions";
 
 type SonettoConDati = {
   id: string;
@@ -10,6 +10,7 @@ type SonettoConDati = {
   autore: string;
   bersaglio: string | null;
   reazioni: { tipo: string }[];
+  commenti: { id: string; autore: string; testo: string; createdAt: Date }[];
 };
 
 function contaReazioni(reazioni: { tipo: string }[]): Record<TipoReazione, number> {
@@ -83,6 +84,44 @@ export function SonettoCard({ sonetto }: { sonetto: SonettoConDati }) {
           <span>📤</span>
           <span>WhatsApp</span>
         </a>
+      </div>
+
+      <div className="mt-5 border-t border-emerald-900/10 pt-4 dark:border-white/10">
+        {sonetto.commenti.length > 0 && (
+          <ul className="mb-3 flex flex-col gap-2">
+            {sonetto.commenti.map((c) => (
+              <li key={c.id} className="rounded-lg bg-emerald-900/5 px-3 py-2 text-sm dark:bg-white/5">
+                <span className="font-medium text-emerald-800 dark:text-emerald-300">{c.autore}</span>
+                <span className="text-zinc-500">: </span>
+                <span className="text-zinc-700 dark:text-zinc-300">{c.testo}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <form action={createCommento} className="flex flex-wrap gap-2">
+          <input type="hidden" name="sonettoId" value={sonetto.id} />
+          <input
+            type="text"
+            name="autore"
+            required
+            placeholder="Il tuo nome"
+            className="w-32 flex-none rounded-lg border border-zinc-300 bg-white px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-800"
+          />
+          <input
+            type="text"
+            name="testo"
+            required
+            placeholder="Scrivi un commento…"
+            className="min-w-0 flex-1 rounded-lg border border-zinc-300 bg-white px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-800"
+          />
+          <button
+            type="submit"
+            className="flex-none rounded-lg bg-emerald-700 px-3 py-1 text-sm font-medium text-white hover:bg-emerald-800"
+          >
+            Commenta
+          </button>
+        </form>
       </div>
     </article>
   );
